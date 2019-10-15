@@ -18,7 +18,7 @@ steps:
   displayName: 'install dependencies'
 
 - bash: |
-   papermill build/05-devops-pipeline-build.ipynb build/build_out.ipynb --log-output
+   papermill build/03-devops-pipeline-build.ipynb build/build_out.ipynb --log-output
    
   displayName: 'run deployment'
   env:
