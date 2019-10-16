@@ -1,0 +1,41 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-18.04'
+
+steps:
+- task: UsePythonVersion@0
+  displayName: 'Use Python 3.6.9'
+  inputs:
+    versionSpec: 3.6.9
+
+- bash: |
+   pip3 install ipykernel==5.1.2
+   pip3 install papermill==1.2.0
+   pip3 install mlflow==1.3.0
+   pip3 install azureml-core==1.0.65
+   pip3 install keras==2.3.0
+   pip3 install tensorflow==1.13.1
+   
+  displayName: 'install dependencies'
+
+- bash: |
+   papermill build/03-devops-pipeline-build.ipynb build/build_out.ipynb --log-output
+   
+  displayName: 'run deployment'
+  env:
+    workspace_name: $(workspace_name)
+    subscription_id: $(subscription_id)
+    resource_group: $(resource_group)
+    location: $(location)
+    account_name: $(account_name)
+    account_key: $(account_key)
+    tenant_id: $(tenant_id)
+    service_principal_id: $(service_principal_id)
+    service_principal_password: $(service_principal_password)
+
+- bash: |
+   echo deployment completed and availiable URI:
+   echo $(<scoring_path)
+  displayName: result
